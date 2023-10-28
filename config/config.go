@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type DatabaseConfig struct {
@@ -33,6 +34,7 @@ type Config struct {
 	ServerAddress 		string 
 	Port 				string 
 	RootPath 			string
+	Debug				bool
 }
 
 func BuildConfig() (*Config) {
@@ -53,7 +55,10 @@ func BuildConfig() (*Config) {
 		CookieSecure: os.Getenv("COOKIE_SECURE"),
 		CookieDomain: os.Getenv("COOKIE_DOMAIN"),
 	}
+
+	debug, _ := strconv.ParseBool(os.Getenv("DEBUG"))
 	return &Config{
+		Debug: debug,
 		Port: os.Getenv("PORT"),
 		Renderer: os.Getenv("RENDERER"),
 		DatabaseConfig: dbConfig,

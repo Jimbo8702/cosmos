@@ -2,6 +2,7 @@ package render
 
 import (
 	"Jimbo8702/randomThoughts/cosmos/config"
+	"errors"
 	"net/http"
 
 	"github.com/alexedwards/scs/v2"
@@ -38,11 +39,20 @@ func (c *Render) CheckAuth(td *TemplateData, r *http.Request) *TemplateData {
 	return td
 }
 
-func New(sess *scs.SessionManager, config *config.Config) *Render {
-	return &Render{
+func New(sess *scs.SessionManager, config *config.Config) (Renderer, error) {
+	r := &Render{
 		RootPath: config.RootPath,
 		Port: config.Port,
 		Session: sess,
+	}
+
+	switch config.Renderer {
+		case "go":
+			return NewGoRenderer(r), nil
+		case "jet":
+			return NewJetRenderer(r, config.RootPath), nil
+		default:
+			return nil, errors.New("renderer type not supported")
 	}
 }
 

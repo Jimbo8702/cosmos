@@ -4,6 +4,7 @@ import (
 	"Jimbo8702/randomThoughts/cosmos/config"
 	"Jimbo8702/randomThoughts/cosmos/internal/database"
 	"Jimbo8702/randomThoughts/cosmos/internal/render"
+	"Jimbo8702/randomThoughts/cosmos/internal/session"
 	"log"
 
 	"github.com/alexedwards/scs/v2"
@@ -11,9 +12,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type DBOption[] struct {
-
-}
+const version = "0.1.0"
 
 type Application[db database.Pool] struct {
 	//config values
@@ -31,53 +30,51 @@ type Application[db database.Pool] struct {
 	Database 		database.Database[db]
 }
 
-func New[db database.Pool]() *Application[db] {
-	return &Application[db]{}
+func New[db database.Pool](c *config.Config) *Application[db] {
+	return &Application[db]{
+		RootPath: c.RootPath,
+		AppName: c.AppName,
+		Debug: c.Debug,
+		Version: version,
+	}
 }
 
 func NewApp(rootPath string) error {
-	var (
-		app *Application[database.Pool]
-		// err error
-	)
 	if err := godotenv.Load(rootPath + "/.env"); err != nil {
 		return err
 	}
+	c := config.BuildConfig()
+	app := New[database.Pool](c)
 
-	config := config.BuildConfig()
-	//db type to app
-	// switch strings.ToLower(config.DATABASE_TYPE) {
-	// case "postgres", "postgresql":
-	// 	app, err := InitSQLApp[*sql.DB](config.DATABASE_TYPE)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// case "mongo":
-	// 	app, err = InitMongoApp[database.Pool](config.DATABASE_TYPE)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// }
+	// DATABASE SETUP
+	db, err := database.New[database.Pool](config.BuildDSN(), c.DATABASE_TYPE)
+	if err != nil {
+		return err
+	}
+	app.Database = *db
+
+	// SESSION SETUP
+	sess := session.New(&c.SessionConfig)
+	manager, err := sess.Init(app.Database)
+	if err != nil {
+		return err
+	}
+	app.Session = manager
 	
-	app.RootPath = config.RootPath
-	// build db
+	// RENDER ENGINE SETUP
+	renderer, err := render.New(app.Session, c)
+	if err != nil {
+		return err
+	}
+	app.Engine = renderer
+
 	// build loggers
-	// build session
-	// build render 
+
 	return nil
 }
 
-// func InitSQLApp[p *sql.DB](dbType string) (*Application[p], error) {
-// 	db, err := database.NewSQL[*sql.DB](dbType, config.BuildDSN())
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	return &Application[p]{
-// 		Database: db,
-// 	}, nil
-// }
 
-// func InitMongoApp[a database.Pool](dbType string) (*Application[a], error) {
-// 	return &Application[a]{}, nil
-// }
+
+
+
 

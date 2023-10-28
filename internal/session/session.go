@@ -2,7 +2,9 @@ package session
 
 import (
 	"Jimbo8702/randomThoughts/cosmos/config"
+	"Jimbo8702/randomThoughts/cosmos/internal/database"
 	"database/sql"
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -19,11 +21,11 @@ type Session struct {
 	CookieDomain   string
 	SessionType    string
 	CookieSecure   string
-	DBPool 		   *sql.DB
+	DBPool 		   database.Pool
 }
 
-func New(con *config.Config) (*scs.SessionManager, error) {
-	sess := &Session{
+func New(con *config.SessionConfig) *Session {
+	return &Session{
 		CookieLifetime: con.CookieLifetime,
 		CookiePersist: con.CookiePersist,
 		CookieName: con.CookieName,
@@ -31,10 +33,9 @@ func New(con *config.Config) (*scs.SessionManager, error) {
 		CookieSecure: con.CookieSecure,
 		SessionType: con.SessionType,
 	}
-	return sess.init(), nil
 }
 
-func(c *Session) init() *scs.SessionManager {
+func(c *Session) Init(dbPool database.Pool) (*scs.SessionManager, error) {
 	//defaults to false
 	var persist, secure bool
 
@@ -66,11 +67,15 @@ func(c *Session) init() *scs.SessionManager {
 	// which session store?
 	switch strings.ToLower(c.SessionType) {
 	case "redis":
-		//
+		// if redis we would create a new redis instance with the database.New() then do type assertion, then add it to the session store
 	case "postgres", "postgresql":
-		session.Store = postgresstore.New(c.DBPool)
+		db, ok := dbPool.(*sql.DB)
+		if !ok {
+			return nil, errors.New("unable to determine database type for sessions")
+		}
+		session.Store = postgresstore.New(db)
 	default:
 		//defaults to cookie auth
 	}
-	return session
+	return session, nil
 }

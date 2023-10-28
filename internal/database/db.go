@@ -17,18 +17,22 @@ type Pool interface {
 	*sql.DB | *mongo.Client | any
 }
 
+type DataPool[p Pool] struct {
+	Pool p
+}
+
 type Database[p Pool] struct {
 	DataType string
 	Pool 	p
 }
 
+//working as long as any is present
 func New[p Pool](dsn, dbType string) (*Database[Pool], error) {
 	var (
 		dbpool Pool
 		err error
 		database Database[Pool]
 	)
-	
 	//find the type of db, then connect to it
 	switch strings.ToLower(dbType) {
 	case "postgres", "postgresql":
@@ -46,8 +50,9 @@ func New[p Pool](dsn, dbType string) (*Database[Pool], error) {
 		}
 		database.Pool = dbpool
 		return &database, nil
+	default:
+		return nil, errors.New("dbType is not supported")
 	}
-	return nil, errors.New("error loading db, could not find dbtype")
 }
 
 func NewPostgres(dsn string) (*sql.DB, error) {
@@ -61,3 +66,4 @@ func NewPostgres(dsn string) (*sql.DB, error) {
 	}
 	return db, nil
 }
+
