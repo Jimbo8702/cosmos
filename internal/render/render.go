@@ -32,6 +32,7 @@ type Render struct {
 	Session 	*scs.SessionManager
 }
 
+// maybe add in default data too (look at prior example)
 func (c *Render) CheckAuth(td *TemplateData, r *http.Request) *TemplateData {
 	if c.Session.Exists(r.Context(), "userID") {
 		td.IsAuthenticated = true

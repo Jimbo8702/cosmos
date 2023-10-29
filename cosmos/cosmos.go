@@ -1,11 +1,11 @@
-package main
+package cosmos
 
 import (
 	"Jimbo8702/randomThoughts/cosmos/config"
 	"Jimbo8702/randomThoughts/cosmos/internal/database"
+	"Jimbo8702/randomThoughts/cosmos/internal/logger"
 	"Jimbo8702/randomThoughts/cosmos/internal/render"
 	"Jimbo8702/randomThoughts/cosmos/internal/session"
-	"log"
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi"
@@ -22,15 +22,15 @@ type Application[db database.Pool] struct {
 	RootPath 		string
 
 	//external items
-	ErrorLog 		*log.Logger
-	InfoLog  		*log.Logger
+	ErrorLog 		*logger.ErrorLog
+	InfoLog  		*logger.InfoLog
 	Routes 	 		*chi.Mux
 	Session	 		*scs.SessionManager
 	Engine 			render.Renderer
 	Database 		database.Database[db]
 }
 
-func New[db database.Pool](c *config.Config) *Application[db] {
+func NewApp[db database.Pool](c *config.Config) *Application[db] {
 	return &Application[db]{
 		RootPath: c.RootPath,
 		AppName: c.AppName,
@@ -39,17 +39,20 @@ func New[db database.Pool](c *config.Config) *Application[db] {
 	}
 }
 
-func NewApp(rootPath string) error {
+func New(rootPath string) (*Application[database.Pool], error) {
+	// load  env
 	if err := godotenv.Load(rootPath + "/.env"); err != nil {
-		return err
+		return nil, err
 	}
-	c := config.BuildConfig()
-	app := New[database.Pool](c)
+	// load config
+	c := config.Load()
+	// build new app with config
+	app := NewApp[database.Pool](c)
 
-	// DATABASE SETUP
+	// DATABASE SETUP 
 	db, err := database.New[database.Pool](config.BuildDSN(), c.DATABASE_TYPE)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	app.Database = *db
 
@@ -57,24 +60,20 @@ func NewApp(rootPath string) error {
 	sess := session.New(&c.SessionConfig)
 	manager, err := sess.Init(app.Database)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	app.Session = manager
 	
 	// RENDER ENGINE SETUP
 	renderer, err := render.New(app.Session, c)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	app.Engine = renderer
 
-	// build loggers
+	// LOGGER SETUP
+	app.ErrorLog = logger.NewErrorLog()
+	app.InfoLog = logger.NewInfoLog()
 
-	return nil
+	return app, nil
 }
-
-
-
-
-
-

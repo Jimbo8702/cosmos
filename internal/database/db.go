@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+//with any (working)
 type Pool interface {
 	*sql.DB | *mongo.Client | any
 }
@@ -34,6 +35,7 @@ func New[p Pool](dsn, dbType string) (*Database[Pool], error) {
 		database Database[Pool]
 	)
 	//find the type of db, then connect to it
+	//maybe try to get rid of any inside pool, and do type asserition here instead
 	switch strings.ToLower(dbType) {
 	case "postgres", "postgresql":
 		dbpool, err = NewPostgres(dsn)
@@ -44,7 +46,7 @@ func New[p Pool](dsn, dbType string) (*Database[Pool], error) {
 		return &database, nil
 
 	case "mongo":
-		dbpool, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(dsn))
+		dbpool, err = NewMongo(dsn)
 		if err != nil {
 			return nil, err
 		}
@@ -55,12 +57,21 @@ func New[p Pool](dsn, dbType string) (*Database[Pool], error) {
 	}
 }
 
+
 func NewPostgres(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {
 		return nil, err
 	}
 	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
+}
+
+func NewMongo(dsn string) (*mongo.Client, error) {
+	db, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(dsn))
 	if err != nil {
 		return nil, err
 	}

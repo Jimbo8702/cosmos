@@ -37,7 +37,7 @@ type Config struct {
 	Debug				bool
 }
 
-func BuildConfig() (*Config) {
+func Load() (*Config) {
 	dbConfig := DatabaseConfig{
 		DATABASE_TYPE: 	os.Getenv("DATABASE_TYPE"),
 		DATABASE_HOST:	os.Getenv("DATABASE_HOST"),
@@ -66,6 +66,12 @@ func BuildConfig() (*Config) {
 	}
 }
 
+// why is this in the config package?
+// I keep it here instead of database because it deals with os.Getenv and i want 
+// everything consistant.
+// if i remove this and switch it to use the generated config instead of the os.Getenv
+// ill move it to another package
+
 func BuildDSN() string {
 	var dsn string
 
@@ -88,6 +94,31 @@ func BuildDSN() string {
 
 	return dsn
 }
+
+//build dsn version with config instead of os.getenv
+// func BuildDSN(c *config.DatabaseConfig) string {
+// 	var dsn string
+
+// 	switch c.DATABASE_TYPE {
+// 	case "postgres", "postgresql":
+// 		dsn = fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s timezone=UTC connect_timeout=5",
+// 			c.DATABASE_HOST,
+// 			c.DATABASE_PORT,
+// 			c.DATABASE_USER,
+// 			c.DATABASE_NAME, 
+// 			c.DATABASE_SSL_MODE, 
+// 		)
+
+// 		if c.DATABASE_PASS != "" {
+// 			dsn = fmt.Sprintf("%s password=%s", dsn, c.DATABASE_PASS)
+// 		}
+
+// 	default:
+// 	}
+
+// 	return dsn
+// }
+
 
 //loadconfig reads config from file or env variables
 // func LoadConfig() (*Config, error) {
