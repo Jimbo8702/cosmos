@@ -20,17 +20,5 @@ func main() {
 		log.Fatal(err)
 	}
 	
-	app.ErrorLog.Log("this is an example error", nil)
-	app.InfoLog.Log("this is an example Info", nil)
-
-	//an example on how you can use different loggers 
-	// standardErrorLog := &logger.StdLogger{}
-	// standardErrorLog.SetLevel(logger.ERROR)
-	// app.ErrorLog = standardErrorLog
-	// app.ErrorLog.Log("this is now using the format package from the standard libaray", nil)
-
-	// standardInfoLog := &logger.StdLogger{}
-	// standardInfoLog.SetLevel(logger.INFO)
-	// app.InfoLog = standardInfoLog
-	// app.InfoLog.Log("this is now using the format package from standard libaray", nil)
+	log.Fatal(app.ListenAndServe())
 }

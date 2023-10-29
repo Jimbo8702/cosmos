@@ -35,7 +35,7 @@ func New(con *config.SessionConfig) *Session {
 	}
 }
 
-func(c *Session) Init(dbPool database.Pool) (*scs.SessionManager, error) {
+func(c *Session) Init(db *database.Database[database.Pool]) (*scs.SessionManager, error) {
 	//defaults to false
 	var persist, secure bool
 
@@ -69,7 +69,7 @@ func(c *Session) Init(dbPool database.Pool) (*scs.SessionManager, error) {
 	case "redis":
 		// if redis we would create a new redis instance with the database.New() then do type assertion, then add it to the session store
 	case "postgres", "postgresql":
-		db, ok := dbPool.(*sql.DB)
+		db, ok := db.Pool.(*sql.DB)
 		if !ok {
 			return nil, errors.New("unable to determine database type for sessions")
 		}

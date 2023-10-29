@@ -1,6 +1,8 @@
 package logger
 
 import (
+	"io"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -22,6 +24,7 @@ const (
 type Logger interface {
     LogWithLevel(LogLevel, string, any)
     Log(string, any)
+    GetLogWriter() io.Writer
 }
 
 type LogrusLogger struct {
@@ -51,3 +54,6 @@ func (ll *LogrusLogger) Log(message string, data any) {
     ll.log.Printf("message=%s, data=%v", message, data)
 }
 
+func (ll *LogrusLogger) GetLogWriter() io.Writer {
+    return ll.log.Writer()
+}

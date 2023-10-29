@@ -5,6 +5,7 @@ import (
 	"Jimbo8702/randomThoughts/cosmos/internal/logger"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 )
@@ -33,6 +34,10 @@ func (s *MyLogger) LogWithLevel(level logger.LogLevel, message string, data any)
 		strLevel = lvl
 	}
 	fmt.Printf("%s: message=%s, data=%v\n", strLevel, message, data)
+}
+
+func (s *MyLogger) GetLogWriter() io.Writer {
+	return os.Stdout
 }
 
 func getLevelStr(level logger.LogLevel) (string, error) {

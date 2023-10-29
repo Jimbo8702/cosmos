@@ -23,9 +23,10 @@ type DataPool[p Pool] struct {
 }
 
 type Database[p Pool] struct {
-	DataType string
+	Type string
 	Pool 	p
 }
+
 
 //working as long as any is present
 func New[p Pool](dsn, dbType string) (*Database[Pool], error) {
@@ -35,13 +36,13 @@ func New[p Pool](dsn, dbType string) (*Database[Pool], error) {
 		database Database[Pool]
 	)
 	//find the type of db, then connect to it
-	//maybe try to get rid of any inside pool, and do type asserition here instead
 	switch strings.ToLower(dbType) {
 	case "postgres", "postgresql":
 		dbpool, err = NewPostgres(dsn)
 		if err != nil {
 			return nil, err
 		}
+		database.Type = dbType
 		database.Pool = dbpool
 		return &database, nil
 
@@ -50,6 +51,7 @@ func New[p Pool](dsn, dbType string) (*Database[Pool], error) {
 		if err != nil {
 			return nil, err
 		}
+		database.Type = dbType
 		database.Pool = dbpool
 		return &database, nil
 	default:
@@ -57,14 +59,12 @@ func New[p Pool](dsn, dbType string) (*Database[Pool], error) {
 	}
 }
 
-
 func NewPostgres(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {
 		return nil, err
 	}
-	err = db.Ping()
-	if err != nil {
+	if err = db.Ping(); err != nil {
 		return nil, err
 	}
 	return db, nil
