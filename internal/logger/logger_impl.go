@@ -4,6 +4,7 @@ type Log struct {
 	log 	Logger
 	level 	LogLevel
 }
+
 //Default logger set to logrus
 func New(level LogLevel) Logger {
 	log := NewLogrus()

@@ -1,8 +1,6 @@
 package logger
 
 import (
-	"errors"
-
 	"github.com/sirupsen/logrus"
 )
 
@@ -53,17 +51,3 @@ func (ll *LogrusLogger) Log(message string, data any) {
     ll.log.Printf("message=%s, data=%v", message, data)
 }
 
-func getLevelStr(level LogLevel) (string, error) {
-	switch level {
-    case ERROR:
-        return "ERROR", nil
-    case INFO:
-		return "INFO", nil
-    case WARN:
-		return "WARN", nil
-    case FATAL:
-        return "FATAL", nil
-    default:
-        return "", errors.New("level not supported")
-    }
-}
