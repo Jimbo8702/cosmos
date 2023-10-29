@@ -7,16 +7,22 @@ type ErrorLog struct {
 }
 
 func (el *ErrorLog) Log(message string, data any) {
-	el.log.Log(el.level, message, data)
+	el.log.LogWithLevel(el.level, message, data)
 }
 
-func NewErrorLog() *ErrorLog {
+func (el *ErrorLog) LogWithLevel(level LogLevel, message string, data any) {
+	el.log.LogWithLevel(level, message, data)
+}
+
+func NewErrorLog() Logger {
 	log := NewLogrus()
 	return &ErrorLog{
 		log: log,
 		level: ERROR,
 	}
 }
+
+
 
 // Info logger
 type InfoLog struct {
@@ -25,13 +31,20 @@ type InfoLog struct {
 }
 
 func (il *InfoLog) Log(message string, data any) {
-	il.log.Log(il.level, message, data)
+	il.log.LogWithLevel(il.level, message, data)
+}
+func (il *InfoLog) LogWithLevel(level LogLevel, message string, data any) {
+	il.log.LogWithLevel(level, message, data)
 }
 
-func NewInfoLog() *InfoLog {
+func NewInfoLog() Logger {
 	log := NewLogrus()
 	return &InfoLog{
 		log: log,
 		level: INFO,
 	}
 }
+
+
+
+

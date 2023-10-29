@@ -19,7 +19,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	
 	app.ErrorLog.Log("this is an example error", nil)
 	app.InfoLog.Log("this is an example Info", nil)
 }

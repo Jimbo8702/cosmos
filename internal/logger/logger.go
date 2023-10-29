@@ -20,7 +20,8 @@ const (
 
 // Logger is an interface for logging messages at different log levels.
 type Logger interface {
-    Log(LogLevel, string, any)
+    LogWithLevel(LogLevel, string, any)
+    Log(string, any)
 }
 
 type LogrusLogger struct {
@@ -33,7 +34,7 @@ func NewLogrus() Logger {
 	}
 }
 
-func (ll *LogrusLogger) Log(level LogLevel, message string, data any) {
+func (ll *LogrusLogger) LogWithLevel(level LogLevel, message string, data any) {
     switch level {
     case ERROR:
         ll.log.Error("MESSAGE=", message, " ERROR=", data)
@@ -44,5 +45,9 @@ func (ll *LogrusLogger) Log(level LogLevel, message string, data any) {
     case FATAL:
        ll.log.Fatal(message, data)
     }
+}
+
+func (ll *LogrusLogger) Log(message string, data any) {
+    ll.log.Printf("message=%s, data=%v", message, data)
 }
 

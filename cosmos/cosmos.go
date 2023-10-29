@@ -22,8 +22,8 @@ type Application[db database.Pool] struct {
 	RootPath 		string
 
 	//external items
-	ErrorLog 		*logger.ErrorLog
-	InfoLog  		*logger.InfoLog
+	ErrorLog 		logger.Logger
+	InfoLog  		logger.Logger
 	Routes 	 		*chi.Mux
 	Session	 		*scs.SessionManager
 	Engine 			render.Renderer
