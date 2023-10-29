@@ -18,10 +18,6 @@ type Pool interface {
 	*sql.DB | *mongo.Client | any
 }
 
-type DataPool[p Pool] struct {
-	Pool p
-}
-
 type Database[p Pool] struct {
 	Type string
 	Pool 	p

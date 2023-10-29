@@ -1,10 +1,6 @@
 package cosmos
 
 import (
-	"Jimbo8702/randomThoughts/cosmos/config"
-	"Jimbo8702/randomThoughts/cosmos/internal/database"
-	"Jimbo8702/randomThoughts/cosmos/internal/logger"
-	"Jimbo8702/randomThoughts/cosmos/internal/render"
 	"context"
 	"database/sql"
 	"errors"
@@ -12,6 +8,11 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/Jimbo8702/cosmos/config"
+	"github.com/Jimbo8702/cosmos/internal/database"
+	"github.com/Jimbo8702/cosmos/internal/logger"
+	"github.com/Jimbo8702/cosmos/internal/render"
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi"
@@ -50,7 +51,6 @@ type Application struct {
 	// scs session manager for handling secure sessions
 	Session	 		*scs.SessionManager
 	// might make this an interface to allow for different kinds of session management
-	// idk tho thats a lot
 }
 
 // Build a new app with config vars loaded from env

@@ -1,11 +1,11 @@
 package cosmos
 
 import (
-	"Jimbo8702/randomThoughts/cosmos/config"
-	"Jimbo8702/randomThoughts/cosmos/internal/database"
-	"Jimbo8702/randomThoughts/cosmos/internal/logger"
-	"Jimbo8702/randomThoughts/cosmos/internal/render"
-	"Jimbo8702/randomThoughts/cosmos/internal/session"
+	"github.com/Jimbo8702/cosmos/config"
+	"github.com/Jimbo8702/cosmos/internal/database"
+	"github.com/Jimbo8702/cosmos/internal/logger"
+	"github.com/Jimbo8702/cosmos/internal/render"
+	"github.com/Jimbo8702/cosmos/internal/session"
 
 	"github.com/go-chi/chi"
 	"github.com/joho/godotenv"

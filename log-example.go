@@ -1,13 +1,15 @@
 package main
 
 import (
-	"Jimbo8702/randomThoughts/cosmos/cosmos"
-	"Jimbo8702/randomThoughts/cosmos/internal/logger"
 	"errors"
 	"fmt"
 	"io"
 	"log"
 	"os"
+
+	"github.com/Jimbo8702/cosmos/cosmos"
+
+	"github.com/Jimbo8702/cosmos/internal/logger"
 )
 
 type MyLogger struct {

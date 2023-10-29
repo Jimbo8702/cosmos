@@ -1,9 +1,10 @@
 package render
 
 import (
-	"Jimbo8702/randomThoughts/cosmos/config"
 	"errors"
 	"net/http"
+
+	"github.com/Jimbo8702/cosmos/config"
 
 	"github.com/alexedwards/scs/v2"
 )

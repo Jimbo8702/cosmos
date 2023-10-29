@@ -1,14 +1,15 @@
 package session
 
 import (
-	"Jimbo8702/randomThoughts/cosmos/config"
-	"Jimbo8702/randomThoughts/cosmos/internal/database"
 	"database/sql"
 	"errors"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/Jimbo8702/cosmos/config"
+	"github.com/Jimbo8702/cosmos/internal/database"
 
 	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"

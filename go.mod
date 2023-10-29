@@ -1,4 +1,4 @@
-module Jimbo8702/randomThoughts/cosmos
+module github.com/Jimbo8702/cosmos
 
 go 1.20
 
