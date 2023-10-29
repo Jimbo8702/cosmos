@@ -72,8 +72,8 @@ func New(rootPath string) (*Application[database.Pool], error) {
 	app.Engine = renderer
 
 	// LOGGER SETUP
-	app.ErrorLog = logger.NewErrorLog()
-	app.InfoLog = logger.NewInfoLog()
+	app.ErrorLog = logger.New(logger.ERROR)
+	app.InfoLog = logger.New(logger.INFO)
 
 	return app, nil
 }

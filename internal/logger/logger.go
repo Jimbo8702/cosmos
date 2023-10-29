@@ -39,7 +39,7 @@ func (ll *LogrusLogger) LogWithLevel(level LogLevel, message string, data any) {
     case ERROR:
         ll.log.Error("MESSAGE=", message, " ERROR=", data)
     case INFO:
-		ll.log.Info("MESSAGE=",message, " INFO=", data)
+		ll.log.Info("MESSAGE=", message, " INFO=", data)
     case WARN:
         ll.log.Warn(message, data)
     case FATAL:
@@ -50,4 +50,6 @@ func (ll *LogrusLogger) LogWithLevel(level LogLevel, message string, data any) {
 func (ll *LogrusLogger) Log(message string, data any) {
     ll.log.Printf("message=%s, data=%v", message, data)
 }
+
+
 
