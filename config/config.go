@@ -37,6 +37,18 @@ type Config struct {
 	Debug				bool
 }
 
+type RendererConfig struct {
+	RendererType string
+	ViewPath 	 string
+}
+
+type CosmosOptions struct {
+	Config 
+	SessionConfig
+	DatabaseConfig
+	RendererConfig
+}
+
 func Load() (*Config) {
 	dbConfig := DatabaseConfig{
 		DATABASE_TYPE: 	os.Getenv("DATABASE_TYPE"),

@@ -55,3 +55,4 @@ func New(rootPath string) (*Application, error) {
 
 	return app, nil
 }
+
